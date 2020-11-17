@@ -1,6 +1,8 @@
 # COMP-562-Final-Project
 COMP 562 Final Project: Fake or Real News Detection
 
+Group members: Ziqian Xu, Yinuo Hu, Mingli Zhang, Xinran Ming
+
 **The project report can be found [here](report.pdf).**
 
 Because of the abundancy of information with various qualities available nowadays, we are interested in whether machine learning algorithms can classify fake news versus real news.
