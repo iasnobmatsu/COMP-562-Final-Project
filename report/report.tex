@@ -35,19 +35,21 @@
 \begin{multicols}{2}
 \section{Introduction}
 
-Fake news are gaining attention nowadays both due to the increasing use of internet and medias and due to the rise in political, social, and cultural awareness. News sources such as \emph{The Onion} which intentionally publish fake information are also attracting attentions (Brodie, 2018). Thus, it has become more and more important for people to be able to identify the truthfulness of news and associated information.\par
+Fake news is news or stories created to deliberately misinform or deceive readers. Usually, these stories are created to either influence people’s views, push a political agenda or cause confusion and can often be a profitable business for online publishers. They might also be satire/parody sources such as \emph{The Onion} that was created as a form of entertainment.(Brodie, 2018) 
+
+False information can deceive people by looking like trusted websites or using similar names and web addresses to reputable news organisations.(University of Michigan Library, 2020) Thus, it is important for us be able to identify the truthfulness, accuracy, and authenticity of the news and associated information.\par
 
 Previous studies have attempted to use machine learning algorithms to distinguish fake news from real ones. Researchers have used Logistic Regressions, Naive Bayes algorithms, Support Vector Machines, and Decision Trees to classify news (Katsaros et al., 2019; Granik et al., 2017). Different types of artificial neural networks including Long Short-Term Memory (LSTM) Recurrent Neural Networks, Convolutional Neural Networks, and Adversarial Neural Networks were also widely used in fake information detection tasks (Bahad et al., 2019; Wang et al., 2018; Yang et al., 2018). \par
 
-Because of the plethora of algorithms available to classify fake and real news, and because of the abundance of information with different qualities which are present in our lives, there is a need to explore the effectiveness of different machine learning methods on news classification. Taken together, in the current project, we aim to compare the accuracies of Logistic Regression, Naive Bayes, Support Vector Machine, and LSTM neural network in classifying fake and real news. 
+This variety of available algorithms for information identification has lead to a new question: what is the ``best" way of fake news identification? Our project was designed to address this need and to explore the effectiveness of different machine learning methods on news classification. Taken together, we aim to compare the performance of Logistic Regression, Naive Bayes, Support Vector Machine, and LSTM neural network in fake news classification, via evaluating their accuracy and the confusion matrices corespondent to each algorithm.
 
 
 \section{Data and Preprocessing}
 
 \subsection{Data}
-We obtained two datasets, one with all fake news (N = 23481) and one with all real news (N = 21417), from https://www.kaggle.com/clmentbisaillon/fake-and-real-news-dataset. The datasets each contains 4 columns representing the title of the news, the text content of the news, the subject of the news, and the date for which the news are posted. 
+We obtained two datasets, one with all fake news (N = 23481) and one with all real news (N = 21417), from https://www.kaggle.com/clmentbisaillon/fake-and-real-news-dataset. They each contains 4 variables, including the title of the news, the text content of the news, the subject of the news, and the date for which the news are posted. 
 
-We used python with a variety of libraries in this project. We used pandas, numpy, matplotlib, seaborn, nltk, and wordcloud for simple text data manipulations and visualizations; we used scikit-learn and keras for modeling.
+We used python and its built-in libraries in this project. We used pandas, numpy, matplotlib, seaborn, nltk, and wordcloud for simple text data manipulations and visualizations. After that, we used scikit-learn and keras to train machine learning algorithms for news classification.
 
 \subsection{Preprocessing}
 
@@ -59,37 +61,43 @@ We used the text contents of the news to classify whether they are real or fake.
 
 
 \begin{itemize}[noitemsep]
-  \item remove text sections that are the news article tagging someone (e.g. "@aPerson").
-  \item remove urls in the news articles (e.g. "https://twitter.com/").
-  \item remove text sections that are not exactly urls but also contain slash (e.g. "pic.twitter.com/wiQSQNNzw0").
-  \item remove "(Rueter)" and anything that comes before it. Real news in the datasets being used often begin with a location for the news and "Rueter" to indicate realness (e.g. "WASHINGTON(Rueter)...").
-  \item remove punctuation.
-  \item remove numbers and non-alphabetic characters.
-  \item remove stop words, which are common words in a language that do not have specific semantic or syntactic significance (e.g. "the", "is").
-  \item stem words into root forms to avoid different forms of the same word being treated as separated words (e.g. "drink" and "drinking" should be treated in the same way).
+  \item Remove external links in the text section, including tweet quotes, urls, slashes. The criteria for exclusion include but is not limited to ``@", ``https://", ``.com", ``.org", ``/".
+  \item Remove non-informative contents in the text section, including punctuation, numbers, stop words, and non-alphabetic characters.
+  \item Remove identity indicators, especially names of authentic news agencies. Such as ``Rueter", ``The New York Times", ``The Washington Post".
+  \item Used stemmer to identify the same words under different tense or plural forms. For instance, treat ``drink" and ``drinking" or ``door" and ``doors" as the same word.
 \end{itemize}
 
-For example, the following sentence from real news "WASHINGTON (Reuters) - The U.S. House of Representatives on Thursday approved an \$81 billion bill to help widespread recovery efforts from hurricanes and wildfires this year." became "the us hous repres thursday approv billion bill help widespread recoveri effort hurrican wildfir year" after text cleaning.
+Following these cleaning criteria, the example ``WASHINGTON (Reuters) - The U.S. House of Representatives on Thursday approved an \$81 billion bill to help widespread recovery efforts from hurricanes and wildfires this year." would be ``the us hous repres thursday approv billion bill help widespread recoveri effort hurrican wildfir year" after text cleaning.
 
 \section{Exploratory Data Analysis}
 
 
 \begin{center}
 \includegraphics[scale=0.25]{images/img4.png}
+\newline
+\caption{Figure 1. Distributions of news types and lengths}
 \end{center}
 
-We explored the distributions of key news text features as preliminary analyses prior to building machine learning models. While real news only contained subjects of politics or world news, fake news included six categories of subjects, including: news, politics, government news, left-news, US news, and Middle East news. The distributions are shown in the figure above. Real and fake news also had different distributions of text length as shown in the figure above: while real news had two peak lengths with most articles, fake news only had one of such peak, so, text length may be a good indicator of whether a news article is fake or real.  
+We explored the distributions of key news text features as preliminary analyses prior to building machine learning models. While real news only contained subjects of politics or world news, fake news evolved around six categories of subjects, including news, politics, government news, left-news, US news, and Middle East news. The distributions are shown in the Figure 1. Real and fake news also had different distributions of content text lengths also demonstrated in Figure 1: while real news had two peaks in the length distribution, fake news only had one such peak. Therefore, text length may be a good indicator of whether a news article is fake or real.  
 
 
 \begin{center}
 \includegraphics[scale=0.45]{images/wd2.png}
+\newline
+\caption{Figure 2. Text composition of real Vs. fake news}
 \end{center}
 
-We also looked at the text composition of real versus fake news. The above word cloud figures show which words appear most frequently in the real news dataset and in the fake news dataset respectively. For both real news and fake news, a lot of them are related to the president of U.S. and are about politics. The difference in word composition between real and fake news are not clear from visual inspections of the word clouds, which is why we need to build machine learning models to classify them. The following bar charts show real (top figure) and fake (bottom figure) news word frequency distributions concordant to the top 50 most frequent words extracted by the word clouds shown above. The word frequency distributions used raw data instead of the cleaned up data because whole words make more sense than stemmed words.
+We also looked at the text composition of real versus fake news. The word cloud in Figure 2 show which words appear most frequently in the real news dataset and in the fake news dataset respectively. For both real news and fake news, a lot of keywords are related to the president of U.S. and are about politics. The differences in word compositions between real news and fake news are not clear from visual inspections of the word clouds, which is why we need to build machine learning models to classify them. Figure 3 and 4 further show real news and fake news word frequency distributions concordant to the top 50 most frequent words extracted by the word clouds. The word frequency distributions used raw data instead of the cleaned up data because whole words make more sense than stemmed words.
 
 \begin{center}
 \includegraphics[scale=0.26]{images/freqreal.png}
+\newline
+\caption{Figure 3. Real news word frequency}
+\end{center}
+\begin{center}
 \includegraphics[scale=0.26]{images/freqfake.png}
+\newline
+\caption{Figure 4. Fake news word frequency}
 \end{center}
 
 \section{Models}
@@ -106,6 +114,8 @@ Logistic Regression is widely used for binary classification problems. Logistic 
 TFIDF transformation gave us 157664 features from the training set news text, and with these features, the Logistic Regression classifier predicts the testing set with an accuracy of 98.05\%.
 \begin{center}
 \includegraphics[scale=0.45]{images/lrcm.png}
+\newline
+\caption{Figure 5. Confusion matrix for Logistic Regression}
 \end{center}
 \subsection{Naive Bayes}
 Bayes' Rule states that $P(A|B)=\frac{P(B|A)P(A)}{P(B)}$. Naive Bayes applies Bayes's rule to a chain of features with the assumption that the probability of each feature is independent. There are different types of Naive Bayes classifiers that are based on different distributions such as Bernoulli, Gaussian, and Multinomial. Although the TFIDF encoding we used generates float-point data, Gaussian Naive Bayes classifier cannot be used in our study because it requires a non-sparse input matrix. Thus, we chose to use the Multinomial Native Bayes classifier, which would work with TDIDF data even though discrete encoding would be more ideal. 
@@ -114,6 +124,8 @@ After training with 157664 features, the Multinomial Native Bayes classifier pre
 
 \begin{center}
 \includegraphics[scale=0.45]{images/nbcm.png}
+\newline
+\caption{Figure 6. Confusion matrix for Naive Bayes}
 \end{center}
 
 \subsection{Support Vector Machine}
@@ -123,6 +135,8 @@ After training with 157664 features, the SVM classifier predicts the testing set
 
 \begin{center}
 \includegraphics[scale=0.45]{images/svmcm.png}
+\newline
+\caption{Figure 7. Confusion matrix for SVM}
 \end{center}
 
 \subsection{LSTM}
@@ -130,28 +144,24 @@ We also used a bi-directional LSTM recurrent neural network suggested by Bahad e
 
 \begin{center}
 \includegraphics[scale=0.35]{images/img5.png}
+\newline
+\caption{Figure 8. LSTM network structure}
 \end{center}
 
-We used the above network structure with one iteration of the bi-directional LSTM layes followed by a dropout layer to prevent over-fitting. Two dense layers are used after the LSTM layers to generate the desired output. We trained this network with 5022 features in 39764 training samples over 5 epochs with a mini-batch size of 128.
+We used the above network structure with one iteration of the bi-directional LSTM layers followed by a dropout layer to prevent over-fitting. Two dense layers are used after the LSTM layers to generate the desired output. We trained this network with 5022 features in 39764 training samples over 5 epochs with a mini-batch size of 128.
 
 
 This bi-directional LSTM neural network predicts the testing dataset with an accuracy of 98.73\%.
 
 \begin{center}
 \includegraphics[scale=0.45]{images/lstmcm.png}
+\newline
+\caption{Figure 9. Confusion matrix for LSTM}
 \end{center}
 
-\section{Conclusions}
-
-\subsection{Model Comparison}
-
-
-Comparing the models above, the Naive Bayes classifier has the lowest accuracy while the LSTM network has the highest accuracy. However, although Naive Bayes has the lowest accuracy, the score is still above 90\%. On the other side, while LSTM has the highest score, LSTM's accuracy is only marginally better than Logistic Regression and SVM. This being said, running more epochs during the training phase of LSTM may further increase the score. Admittedly though, LSTM is significantly more computational expensive than the other algorithms, so the decision of which model to use may depend on both what accuracy level is needed and what computational power and time requirements are present. 
-
-Another thing to note is that although LSTM's accuracy is only slightly higher than the other machine learning models used in this project, we did train the LSTM model using much fewer features. The Logistic Regression, Support Vector Machine, and Naive Bayes had 157664 features to train on whereas for the LSTM model, we only used 5022 features for training.
+\section{Discussions}
 
 The following table shows the accuracies, true negatives (TNs), true positives (TPs), false negatives (FPs), and false positives (FPs) of the algorithms used in this study for classifying real vesus fake news. 
-
 
 \begin{center}
 \begin{tabular}{ c| c c c c c}
@@ -162,12 +172,20 @@ NB & 93.32\% & 2020 & 2104 & 163 & 132\\
 SVM & 98.23\% & 2127 & 2214 & 53 & 25\\
 LSTM & 98.73\% & 2127 & 2236 & 31 & 25 \\
 \end{tabular}
+\caption{Table 1. Algorithm Accuracy}
+\newline
 \end{center}
 
-\subsection{Future Directions}
+Comparing the models above, the Naive Bayes classifier has the lowest accuracy while the LSTM network has the highest accuracy. However, although Naive Bayes has the lowest accuracy, the score is still above 90\%. On the other side, while LSTM has the highest score, LSTM's accuracy is only marginally better than Logistic Regression and SVM. This being said, running more epochs during the training phase of LSTM may further increase the score. Admittedly though, LSTM is significantly more computationally expensive than the other algorithms, so the decision of which model to use may depend on both what accuracy level is needed and what computational power and time requirements are present. 
 
-Machine learning algorithms are relatively accurate in predicting fake news from the news articles' text content. However, because news articles can be long, processing and categorizing article texts maybe inefficient in computation and training time. In the future, we may want to investigate whether instead of news article contents, news title lines can be used to predict news articles' truthfulness. News title lines are much shorter than the actual contents of news articles, thus can be more computationally efficient to analyze. 
+Another thing to note is that although LSTM's accuracy is only slightly higher than the other machine learning models used in this project, we did train the LSTM model using much fewer features. The Logistic Regression, Support Vector Machine, and Naive Bayes had 157664 features to train on, whereas for the LSTM model, we only used 5022 features for training.
 
+
+
+
+
+\section{Conclusion}
+In conclusion, the machine learning algorithms we employed are relatively accurate in classifying fake news by text content analysis. There exists a difference in computational time among different methods. The difference in accuracy and running time are fully discussed in the discussion section. However, due to the lengthy nature of news contents, we find content analyzing extremely time-consuming, both in computation and training time. This might largely influence the efficiency of information identification. A solution to this problem might be an identification algorithm that focus on analyzing the title or summary of the news. Future work could be done on title-focused news classification, for the purpose of increasing computationally efficiency.
 
 
 
@@ -182,25 +200,49 @@ We thank the following kaggle kernels for guiding us through the natural languag
 \end{itemize}
 
 
-\section{References}
+\newpage
+%Bibliographic references
+\begin{thebibliography}{9}
 
-\quad \, Ahmed, H., Traore, I., \& Saad, S. (2018). Detecting opinion spams and fake news using text classification. Security and Privacy, 1(1), e9.
+\bibitem{Ahmed} 
+Ahmed, H., Traore, I., \& Saad, S. (2018).Detecting opinion spams and fake news using text classification.
+\textit {Security and Privacy, 1}(1), e9.
 
-Bahad, P., Saxena, P., \& Kamal, R. (2019). Fake News Detection using Bi-directional LSTM-Recurrent Neural Network. Procedia Computer Science, 165, 74-82.
+\bibitem{Bahad} 
+Bahad, P., Saxena, P., \& Kamal, R. (2019). Fake News Detection using Bi-directional LSTM-Recurrent Neural Network. 
+\textit {Procedia Computer Science, 165}, 74-82.
 
-Brodie, I. (2018). Pretend news, false news, fake news: The onion as put-on, prank, and legend. Journal of American Folklore, 131(522), 451-459.
+\bibitem{Brodie} 
+Brodie, I. (2018). Pretend news, false news, fake news: The onion as put-on, prank, and legend.
+\textit {Journal of American Folklore, 131}(522), 451-459.
 
-Granik, M., \& Mesyura, V. (2017, May). Fake news detection using naive Bayes classifier. In 2017 IEEE First Ukraine Conference on Electrical and Computer Engineering (UKRCON) (pp. 900-903). IEEE.
+\bibitem{Granik} 
+Granik, M., \& Mesyura, V. (2017, May). Fake news detection using naive Bayes classifier. In
+\textit {2017 IEEE First Ukraine Conference on Electrical and Computer Engineering (UKRCON)} (pp. 900-903). IEEE.
 
-Katsaros, D., Stavropoulos, G., \& Papakostas, D. (2019, October). Which machine learning paradigm for fake news detection?. In 2019 IEEE/WIC/ACM International Conference on Web Intelligence (WI) (pp. 383-387). IEEE.
+\bibitem{Katsaros} 
+Katsaros, D., Stavropoulos, G., \& Papakostas, D. (2019, October). Which machine learning paradigm for fake news detection?. In
+\textit {2019 IEEE/WIC/ACMInternational Conference on Web Intelligence (WI)} (pp.  383-387). IEEE.
 
-Schuster, M., \& Paliwal, K. K. (1997). Bidirectional recurrent neural networks. IEEE transactions on Signal Processing, 45(11), 2673-2681.
+\bibitem{Research Guides} 
+Research Guides. (2020, June 24).
+Retrieved November 19, 2020, from 
+\textit{https://guides.lib.umich.e
+du/fakenews}. 
 
-Wang, Y., Ma, F., Jin, Z., Yuan, Y., Xun, G., Jha, K., ... \& Gao, J. (2018, July). Eann: Event adversarial neural networks for multi-modal fake news detection. In Proceedings of the 24th acm sigkdd international conference on knowledge discovery & data mining (pp. 849-857).
+\bibitem{Schuster} 
+Schuster, M., \& Paliwal, K. K. (1997). Bidirectional recurrent neural networks. 
+\textit {IEEE transactions on Signal Processing, 45} (11), 2673-2681.
 
-Yang, Y., Zheng, L., Zhang, J., Cui, Q., Li, Z., \& Yu, P. S. (2018). TI-CNN: Convolutional neural networks for fake news detection. arXiv preprint arXiv:1806.00749.
+\bibitem{Wang} 
+Wang, Y., Ma, F., Jin, Z., Yuan, Y., Xun, G., Jha, K., ... \& Gao, J. (2018, July). Eann: Event adversarial neural networks for multi-modal fake news detection. In 
+\textit {Proceedings of the 24th acm sigkdd international conference on knowledge discovery & data mining} (pp. 849-857).
+
+\bibitem{Yang} 
+Yang, Y., Zheng, L., Zhang, J., Cui, Q., Li, Z., \& Yu, P. S. (2018). TI-CNN: Convolutional neural networks for fake news detection. 
+\textit {arXiv preprint arXiv:1806.00749.}
+
+\end{thebibliography}
 
 \end{multicols}
 \end{document}
-
-
